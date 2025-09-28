@@ -1,0 +1,84 @@
+name: "Selenoid via CM"
+description: "Download Aerokube CM and start Selenoid on localhost:4444"
+author: "Vikindor"
+
+branding:
+  icon: package
+  color: purple
+
+inputs:
+  browsers:
+    description: "Comma-separated browsers (e.g. chrome,firefox)"
+    required: false
+    default: "chrome"
+  last-versions:
+    description: "How many latest versions to pull"
+    required: false
+    default: "1"
+  force:
+    description: "Use --force (true/false)"
+    required: false
+    default: "true"
+  install-method:
+    description: "script | direct"
+    required: false
+    default: "script"
+  cm-version:
+    description: "Pin CM version when install-method=direct (e.g. 1.8.2). Empty = latest"
+    required: false
+    default: ""
+  extra-args:
+    description: "Extra args for 'cm selenoid start'"
+    required: false
+    default: ""
+
+outputs:
+  remote:
+    description: "Selenoid remote URL"
+    value: ${{ steps.setout.outputs.remote }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install CM
+      shell: bash
+      env:
+        INSTALL_METHOD: ${{ inputs.install-method }}
+        CM_VERSION: ${{ inputs.cm-version }}
+      run: |
+        set -e
+        if [ "$INSTALL_METHOD" = "direct" ]; then
+          ARCH=$(uname -m)
+          case "$ARCH" in
+            x86_64) F=cm_linux_amd64 ;;
+            aarch64|arm64) F=cm_linux_arm64 ;;
+            *) echo "Unsupported arch: $ARCH"; exit 1 ;;
+          esac
+          if [ -z "$CM_VERSION" ]; then
+            PATH_PART="releases/latest/download"
+          else
+            PATH_PART="releases/download/${CM_VERSION}"
+          fi
+          curl -fsSL -o ./cm "https://github.com/aerokube/cm/${PATH_PART}/${F}"
+          chmod +x ./cm
+        else
+          curl -s https://aerokube.com/cm/bash | bash
+        fi
+        ./cm version
+
+    - name: Start Selenoid
+      shell: bash
+      env:
+        BROWSERS: ${{ inputs.browsers }}
+        LAST_VERSIONS: ${{ inputs.last-versions }}
+        FORCE: ${{ inputs.force }}
+        EXTRA_ARGS: ${{ inputs.extra-args }}
+      run: |
+        set -e
+        FORCE_FLAG=""
+        if [ "$FORCE" = "true" ]; then FORCE_FLAG="--force"; fi
+        ./cm selenoid start --browsers "$BROWSERS" --last-versions "$LAST_VERSIONS" $FORCE_FLAG $EXTRA_ARGS
+
+    - id: setout
+      shell: bash
+      run: echo "remote=http://localhost:4444/wd/hub" >> "$GITHUB_OUTPUT"
