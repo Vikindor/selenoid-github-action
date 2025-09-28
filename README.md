@@ -1,13 +1,23 @@
-# Selenoid via CM — GitHub Composite Action
+<h2 align="center">
+Selenoid via Aerokube CM — GitHub Composite Action
+</h2>
 
-Start a local [Selenoid](https://aerokube.com/selenoid/) on GitHub-hosted runners using Aerokube **CM** in two lines — with sane defaults and optional parameters when needed.
+<div align="center">
 
-- **Defaults (no inputs):**
-  - Install CM via official script: `curl -s https://aerokube.com/cm/bash | bash`
-  - Start Selenoid: `./cm selenoid start --browsers 'chrome' --last-versions 1 --force`
-  - Remote URL output: `http://localhost:4444/wd/hub`
+[![license](https://img.shields.io/github/license/Vikindor/selenoid-github-action.svg)](https://github.com/Vikindor/selenoid-github-action/blob/main/LICENSE)
+[![release](https://img.shields.io/github/release/Vikindor/selenoid-github-action.svg)](https://github.com/Vikindor/selenoid-github-action/releases/latest)
+[![CodeFactor](https://www.codefactor.io/repository/github/Vikindor/selenoid-github-action/badge)](https://www.codefactor.io/repository/github/Vikindor/selenoid-github-action)
 
-> This is a **composite action** (pure YAML). No Node.js runtime or `node_modules` are required.
+</div>
+
+Start a local [Selenoid](https://aerokube.com/selenoid/) on GitHub-hosted runners using **Aerokube CM** easily — with sane defaults and optional parameters when needed.
+
+✨ **Defaults (no inputs):**
+  - Installs CM via the official installer (script method).
+  - Starts Selenoid with Chrome, pulling the latest available version and applying --force.
+  - Exposes the WebDriver hub URL as the remote output: http://localhost:4444/wd/hub.
+
+🧩 This is a **composite action** (pure YAML). No Node.js runtime or `node_modules` are required.
 
 ---
 
@@ -66,10 +76,10 @@ Start a local [Selenoid](https://aerokube.com/selenoid/) on GitHub-hosted runner
 ## How it works
 
 1. **Install CM**
-   - `install-method: script` → `curl -s https://aerokube.com/cm/bash | bash`
-   - `install-method: direct` → download CM binary for the current CPU arch from GitHub Releases (optionally pinned with `cm-version`).
-2. **Start Selenoid** via CM with provided inputs.
-3. **Expose remote URL** as an action output `remote`.
+   - `install-method: script` → download from https://aerokube.com/ (default)
+   - `install-method: direct` → download CM binary for the current CPU arch from GitHub Releases (optionally pinned with `cm-version`)
+2. **Start Selenoid** via CM with provided inputs
+3. **Expose remote URL** as an action output `remote`
 
 ---
 
