@@ -144,7 +144,7 @@ systemProperties(
 ```groovy
 test {
     useJUnitPlatform()
-    systemProperties System.getProperties()
+	systemProperties(System.getProperties())
 }
 ```
 
