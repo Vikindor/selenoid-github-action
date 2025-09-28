@@ -73,17 +73,6 @@ Start a local [Selenoid](https://aerokube.com/selenoid/) on GitHub-hosted runner
 
 ---
 
-## Versioning & updates
-
-- Use tags when referencing the action: `@v1` (major) is recommended.
-- To update `@v1` to the latest commit:
-  ```bash
-  git tag -fa v1 -m "v1 update"
-  git push origin v1 -f
-  ```
-
----
-
 ## Example: full Java workflow (JDK + Selenide)
 ```yaml
 name: CI
